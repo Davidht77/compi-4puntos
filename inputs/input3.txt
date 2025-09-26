@@ -1,0 +1,1 @@
+y = sqrt(16); print('Resultado de y', y)
