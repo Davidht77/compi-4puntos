@@ -1,11 +1,18 @@
 Scanner
 
-TOKEN(NUM, "2")
-TOKEN(PLUS, "+")
-TOKEN(NUM, "3")
-TOKEN(MUL, "*")
-TOKEN(NUM, "4")
-TOKEN(END)
+TOKEN(ID, "b")
+TOKEN(ASSIGN, "=")
+TOKEN(ID, "rand")
+TOKEN(LPAREN, "(")
+TOKEN(NUM, "1")
+TOKEN(COMMA, ",")
+TOKEN(NUM, "10")
+TOKEN(RPAREN, ")")
+TOKEN(SEMICOL, ";")
+TOKEN(PRINT, "print")
+TOKEN(LPAREN, "(")
+TOKEN(ERR, "'")
+Caracter invalido
 
-Scanner exitoso
+Scanner no exitoso
 

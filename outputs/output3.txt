@@ -1,7 +1,4 @@
 === STDOUT ===
-Parseo exitoso
-Codigo:
-1 + 2 + 3
-Interprete:6
 
 === STDERR ===
+Error al parsear: Error lexico

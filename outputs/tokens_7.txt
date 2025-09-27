@@ -1,16 +1,20 @@
 Scanner
 
-TOKEN(LPAREN, "(")
+TOKEN(ID, "y")
+TOKEN(ASSIGN, "=")
+TOKEN(LCOR, "{")
+TOKEN(LCOR, "{")
 TOKEN(NUM, "1")
-TOKEN(PLUS, "+")
+TOKEN(COMMA, ",")
+TOKEN(NUM, "2")
+TOKEN(RCOR, "}")
+TOKEN(CUP, "cup")
+TOKEN(LCOR, "{")
 TOKEN(NUM, "3")
-TOKEN(RPAREN, ")")
-TOKEN(MUL, "*")
-TOKEN(LPAREN, "(")
+TOKEN(COMMA, ",")
 TOKEN(NUM, "4")
-TOKEN(PLUS, "+")
-TOKEN(NUM, "5")
-TOKEN(RPAREN, ")")
+TOKEN(RCOR, "}")
+TOKEN(RCOR, "}")
 TOKEN(END)
 
 Scanner exitoso

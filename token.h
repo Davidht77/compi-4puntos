@@ -24,9 +24,12 @@ public:
         SEMICOL, // ;
         PRINT,    // print
         ASSIGN,   // =
-        LCOR,
-        RCOR,
-        COMMA,
+        LCOR,     // {
+        RCOR,       // }
+        COMMA,      // ,
+        CUP,      // UNION
+        CAP,       // INTERSECCIÓN
+        DIFF,     // ("\"")
         END      // Fin de entrada
     };
 

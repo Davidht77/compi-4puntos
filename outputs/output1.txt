@@ -1,7 +1,9 @@
 === STDOUT ===
 Parseo exitoso
 Codigo:
-2 + 5 + 3
-Interprete:10
+x = 5
+print(x)
+
+Interprete:5
 
 === STDERR ===

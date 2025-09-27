@@ -19,12 +19,20 @@ enum BinaryOp {
     POW_OP
 };
 
+//Operadores de conjuntos soportados
+enum SetOp {
+    CUP_OP,   // cup (unión)
+    CAP_OP,   // cap (intersección)
+    DIFF_OP   // \ (diferencia)
+};
+
 // Clase abstracta Exp
 class Exp {
 public:
     virtual int  accept(Visitor* visitor) = 0;
     virtual ~Exp() = 0;  // Destructor puro → clase abstracta
     static string binopToChar(BinaryOp op);  // Conversión operador → string
+    static string setopToChar(SetOp op);  // Conversión operador → string
 };
 
 // Expresión binaria
@@ -85,6 +93,29 @@ public:
     PrintStm(Exp*);
     ~PrintStm();
 };
+
+
+/// Expresión conjunto binaria
+class SetBinaryExp : public Exp {
+public:
+    Exp* left;
+    Exp* right;
+    SetOp op;
+    int accept(Visitor* visitor);
+    SetBinaryExp(Exp* l, Exp* r, SetOp op);
+    ~SetBinaryExp();
+};
+
+/// Expresión conjunto elemento
+class SetExp : public Exp {
+public:
+    vector<Exp*> elements;
+    int accept(Visitor* visitor);
+    SetExp(vector<Exp*> elems);
+    SetExp();
+    ~SetExp();
+};
+
 
 class Program{
 public:
