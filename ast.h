@@ -5,8 +5,14 @@
 #include <unordered_map>
 #include <list>
 #include <ostream>
+#include <variant>
+#include <set>
+#include <vector>
 
 using namespace std;
+
+// Tipo Value para manejar int o set<int>
+using Value = std::variant<int, std::set<int>>;
 
 class Visitor; 
 
@@ -29,7 +35,7 @@ enum SetOp {
 // Clase abstracta Exp
 class Exp {
 public:
-    virtual int  accept(Visitor* visitor) = 0;
+    virtual Value  accept(Visitor* visitor) = 0;
     virtual ~Exp() = 0;  // Destructor puro → clase abstracta
     static string binopToChar(BinaryOp op);  // Conversión operador → string
     static string setopToChar(SetOp op);  // Conversión operador → string
@@ -41,7 +47,7 @@ public:
     Exp* left;
     Exp* right;
     BinaryOp op;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     BinaryExp(Exp* l, Exp* r, BinaryOp op);
     ~BinaryExp();
 };
@@ -50,7 +56,7 @@ public:
 class NumberExp : public Exp {
 public:
     int value;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     NumberExp(int v);
     ~NumberExp();
 };
@@ -58,7 +64,7 @@ public:
 class IdExp : public Exp {
 public:
     string value;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     IdExp(string v);
     ~IdExp();
 };
@@ -67,21 +73,21 @@ public:
 class SqrtExp : public Exp {
 public:
     Exp* value;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     SqrtExp(Exp* v);
     ~SqrtExp();
 }
 ;
 class Stm{
 public:
-    virtual int  accept(Visitor* visitor) = 0;
+    virtual Value  accept(Visitor* visitor) = 0;
     virtual ~Stm() = 0;  
 };
 class AssignStm: public Stm{
 public:
     string id;
     Exp* rhs;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     AssignStm(string , Exp* );
     ~AssignStm();
 };
@@ -89,7 +95,7 @@ public:
 class PrintStm: public Stm{
 public:
     Exp* e;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     PrintStm(Exp*);
     ~PrintStm();
 };
@@ -101,7 +107,7 @@ public:
     Exp* left;
     Exp* right;
     SetOp op;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     SetBinaryExp(Exp* l, Exp* r, SetOp op);
     ~SetBinaryExp();
 };
@@ -110,7 +116,7 @@ public:
 class SetExp : public Exp {
 public:
     vector<Exp*> elements;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     SetExp(vector<Exp*> elems);
     SetExp();
     ~SetExp();
@@ -120,12 +126,10 @@ public:
 class Program{
 public:
     list<Stm*> slist;
-    int accept(Visitor* visitor);
+    Value accept(Visitor* visitor);
     Program();
     ~Program();
 }
 ;
 
 #endif // AST_H
-
-

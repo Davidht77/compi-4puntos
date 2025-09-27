@@ -61,6 +61,9 @@ Program* Parser::parseProgram() {
     Program * programa = new Program();
     programa->slist.push_back(parseStm());
     while(match(Token::SEMICOL)) {
+        if (isAtEnd()) {
+            break;
+        }
         programa->slist.push_back(parseStm());
     }
 
@@ -72,41 +75,59 @@ Program* Parser::parseProgram() {
 }
 
 Stm* Parser::parseStm() {
-    Stm* stm;
     Exp* e;
     string nombre;
-    if(match(Token::PRINT)) {
-        match(Token::LPAREN);
+
+    if (match(Token::PRINT)) {
+        if (!match(Token::LPAREN)) {
+            throw runtime_error("Error sintáctico");
+        }
         e = parseCE();
-        match(Token::RPAREN);
+        if (!match(Token::RPAREN)) {
+            throw runtime_error("Error sintáctico");
+        }
         return new PrintStm(e);
-    }
-    else if(match(Token::ID)) {
+    } else if (match(Token::ID)) {
         nombre = previous->text;
-        match(Token::ASSIGN);
+        if (!match(Token::ASSIGN)) {
+            throw runtime_error("Error sintáctico");
+        }
         e = parseCE();
         return new AssignStm(nombre, e);
     }
-    return stm;
+
+    throw runtime_error("Error sintáctico");
 }
 
 Exp* Parser::parseCE() {
-    if (check(Token::LCOR)) { 
-        return parseSetExp();  
+    Exp* expr = nullptr;
+
+    if (check(Token::LCOR)) {
+        expr = parseSet();
+    } else {
+        expr = parseE();
     }
-    Token* savedState = current;
-    try {
-        Exp* setExp = parseSetExp();
-        return setExp;  
-    } catch (runtime_error& e) {
-        current = savedState;
+
+    while (true) {
+        if (match(Token::CUP)) {
+            Exp* right = parseSetExp();
+            expr = new SetBinaryExp(expr, right, CUP_OP);
+        } else if (match(Token::CAP)) {
+            Exp* right = parseSetExp();
+            expr = new SetBinaryExp(expr, right, CAP_OP);
+        } else if (match(Token::DIFF)) {
+            Exp* right = parseSetExp();
+            expr = new SetBinaryExp(expr, right, DIFF_OP);
+        } else {
+            break;
+        }
     }
-    
-    return parseE();
+
+    return expr;
 }
 
 Exp* Parser::parseE() {
-    Exp* l = parseE();
+    Exp* l = parseT();
     while (match(Token::PLUS) || match(Token::MINUS)) {
         BinaryOp op;
         if (previous->type == Token::PLUS){
@@ -115,7 +136,7 @@ Exp* Parser::parseE() {
         else{
             op = MINUS_OP;
         }
-        Exp* r = parseE();
+        Exp* r = parseT();
         l = new BinaryExp(l, r, op);
     }
     return l;
@@ -167,64 +188,42 @@ Exp* Parser::parseF() {
 
 //Nueva logica para conjuntos:
 
-Exp* Parser::parseSetExp(){
-    Exp* l = parseSetTerm();
-    while (match(Token::CUP) || match(Token::CAP) || match(Token::DIFF)) {
-        SetOp op;
-        if (previous->type == Token::CUP){
-            op = CUP_OP;
-        }
-        else if (previous->type == Token::CAP){
-            op = CAP_OP;
-        }
-        else if (previous->type == Token::DIFF){
-            op = DIFF_OP;
-        }
-        Exp* r = parseSetTerm();
-        l = new SetBinaryExp(l, r, op);
-    }
-    return l;
-};
-
-Exp* Parser::parseSetTerm(){
-    return parseSetFactor();
-};
-
-Exp* Parser::parseSetFactor(){
-    Exp* e; 
+Exp* Parser::parseSetExp() {
     if (check(Token::LCOR)) {
-        e = parseSet();
-        return e;
-    } 
-    else if (match(Token::LPAREN))
-    {
-        e = parseSetExp();
-        match(Token::RPAREN);
-        return e;
+        return parseSet();
     }
-    else if (match(Token::ID))
-    {
+
+    if (match(Token::LPAREN)) {
+        Exp* inner = parseCE();
+        if (!match(Token::RPAREN)) {
+            throw runtime_error("Error sintáctico");
+        }
+        return inner;
+    }
+
+    if (match(Token::ID)) {
         return new IdExp(previous->text);
     }
-    else {
-        throw runtime_error("Error sintáctico");
-    }
+
+    throw runtime_error("Error sintáctico");
 };
 
 Exp* Parser::parseSet(){
-    if(match(Token::LCOR)){
-        SetExp* e = new SetExp();
-        if (!check(Token::RCOR)){
-            e->elements.push_back(parseSetExp());
-            while(match(Token::COMMA)){
-                Exp* r = parseSetExp();
-                e->elements.push_back(r);
-            }
-        }
-        match(Token::RCOR);
-        return e;
-    }
-    else{
+    if (!match(Token::LCOR)) {
         throw runtime_error("Error sintáctico");
     }
+
+    SetExp* e = new SetExp();
+    if (!check(Token::RCOR)) {
+        e->elements.push_back(parseCE());
+        while (match(Token::COMMA)) {
+            e->elements.push_back(parseCE());
+        }
+    }
+
+    if (!match(Token::RCOR)) {
+        throw runtime_error("Error sintáctico");
+    }
+
+    return e;
 };

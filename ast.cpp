@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "visitor.h"
 
 #include <complex.h>
 #include <iostream>
@@ -87,4 +88,3 @@ IdExp::IdExp(string v) {
 }
 IdExp::~IdExp() {
 }
-

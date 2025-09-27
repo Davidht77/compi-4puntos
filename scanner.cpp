@@ -28,13 +28,22 @@ bool is_white_space(char c) {
 Token* Scanner::nextToken() {
     Token* token;
 
-    // Saltar espacios en blanco
-    while (current < input.length() && is_white_space(input[current])) 
-        current++;
+    while (true) {
+        while (current < input.length() && is_white_space(input[current]))
+            current++;
 
-    // Fin de la entrada
-    if (current >= input.length()) 
-        return new Token(Token::END);
+        if (current >= input.length())
+            return new Token(Token::END);
+
+        if (input[current] == '/' && current + 1 < input.length() && input[current + 1] == '/') {
+            current += 2;
+            while (current < input.length() && input[current] != '\n')
+                current++;
+            continue;
+        }
+
+        break;
+    }
 
     char c = input[current];
 
@@ -61,7 +70,7 @@ Token* Scanner::nextToken() {
         else return new Token(Token::ID, input, first, current - first);
     }
     // Operadores
-    else if (strchr("+/-*();=,{}", c)) {
+    else if (strchr("+/-*();=,{}\\", c)) {
         switch (c) {
             case ';': token = new Token(Token::SEMICOL,  c); break;
             case '=': token = new Token(Token::ASSIGN, c); break;
@@ -83,6 +92,7 @@ Token* Scanner::nextToken() {
             case ')': token = new Token(Token::RPAREN,c); break;
             case '{': token = new Token(Token::LCOR,  c); break;
             case '}': token = new Token(Token::RCOR,  c); break;
+            case '\\': token = new Token(Token::DIFF,  c); break;
         }
         current++;
     }

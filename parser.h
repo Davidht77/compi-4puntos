@@ -21,8 +21,6 @@ public:
     Exp* parseT();                   // Regla gramatical T
     Exp* parseF();                   // Regla gramatical F
     Exp* parseSetExp();              // Regla gramatical SetExp
-    Exp* parseSetTerm();                 // Regla gramatical SetTerm
-    Exp* parseSetFactor();               // Regla gramatical SetFactor
     Exp* parseSet();                 // Regla gramatical SetElem
 };
 

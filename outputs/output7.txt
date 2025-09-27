@@ -1,4 +1,9 @@
 === STDOUT ===
+Parseo exitoso
+Codigo:
+y = {{1, 2} cup {3, 4}}
+
 
 === STDERR ===
-Error al parsear: Error sintáctico
+terminate called after throwing an instance of 'std::bad_variant_access'
+  what():  std::get: wrong index for variant

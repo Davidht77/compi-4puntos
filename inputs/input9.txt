@@ -1,0 +1,11 @@
+// Prueba de operaciones con conjuntos
+x = {1, 2, 3};
+y = {2, 3, 4};
+z = x cup y;
+w = x cap y;
+v = x \ y;
+print(x);
+print(y);
+print(z);
+print(w);
+print(v);
